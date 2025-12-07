@@ -114,7 +114,60 @@ function App() {
       <section className="px-6 py-20 md:py-32 relative z-10">
         <div className="max-w-7xl mx-auto space-y-24 md:space-y-32">
           
-          {/* ProMail Card - First */}
+          {/* SurveyFlow Card - First */}
+          <div 
+            ref={surveyFlowRef}
+            className="group"
+            style={{
+              transform: `scale(${surveyFlowScale})`,
+              opacity: surveyFlowOpacity,
+              willChange: 'transform, opacity'
+            }}
+          >
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 via-gray-950 to-black border border-gray-800/50 hover:border-gray-700/50 transition-all duration-500">
+              <div className="p-8 md:p-16 lg:p-20">
+                <div className="mb-8 md:mb-12">
+                  <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
+                    SurveyFlow
+                  </h2>
+                  <p className="text-xl md:text-2xl lg:text-3xl text-gray-300 mb-4 leading-relaxed max-w-4xl">
+                    Upload a plat photo → get a permanent client link in 10 seconds
+                  </p>
+                  <p className="text-base md:text-lg text-gray-500">
+                    For DMV land surveyors • First 10 locals get lifetime pricing
+                  </p>
+                </div>
+                
+                {/* Video Preview */}
+                <div className="mb-10 md:mb-12 rounded-2xl bg-black border border-gray-700/50 h-64 md:h-96 lg:h-[500px] overflow-hidden group-hover:border-gray-600 transition-colors duration-500">
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  >
+                    <source src={landSurveyVideo} type="video/mp4" />
+                  </video>
+                </div>
+                
+                <div>
+                  <a
+                    href="http://surveyflow-docker.eba-jmmrjy2e.us-east-1.elasticbeanstalk.com/login"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block w-full md:w-auto"
+                  >
+                    <button className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-white text-black font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 shadow-2xl hover:shadow-white/30">
+                      Open SurveyFlow →
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ProMail Card */}
           <div 
             ref={proMailRef}
             className="group"
@@ -162,61 +215,6 @@ function App() {
                       Open ProMail →
                     </button>
                   </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* SurveyFlow Card - Coming Soon */}
-          <div 
-            ref={surveyFlowRef}
-            className="group"
-            style={{
-              transform: `scale(${surveyFlowScale})`,
-              opacity: surveyFlowOpacity,
-              willChange: 'transform, opacity'
-            }}
-          >
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 via-gray-950 to-black border border-gray-800/50 hover:border-gray-700/50 transition-all duration-500">
-              <div className="p-8 md:p-16 lg:p-20">
-                <div className="mb-8 md:mb-12">
-                  <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
-                    SurveyFlow
-                  </h2>
-                  <p className="text-xl md:text-2xl lg:text-3xl text-gray-300 mb-4 leading-relaxed max-w-4xl">
-                    Upload a plat photo → get a permanent client link in 10 seconds
-                  </p>
-                  <p className="text-base md:text-lg text-gray-500">
-                    For DMV land surveyors • First 10 locals get lifetime pricing
-                  </p>
-                </div>
-                
-                {/* Coming Soon Video with Overlay */}
-                <div className="mb-10 md:mb-12 rounded-2xl bg-black border border-gray-700/50 h-64 md:h-96 lg:h-[500px] overflow-hidden group-hover:border-gray-600 transition-colors duration-500 relative">
-                  <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                  >
-                    <source src={landSurveyVideo} type="video/mp4" />
-                  </video>
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900/70 to-black/70 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-6xl md:text-8xl mb-4 animate-pulse">🚀</div>
-                      <div className="text-2xl md:text-4xl font-bold text-gray-300 mb-2">Coming Soon</div>
-                      <div className="text-lg md:text-xl text-gray-500">AI-powered preview coming soon</div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <button 
-                    disabled
-                    className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-gray-800 text-gray-500 font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl cursor-not-allowed opacity-50">
-                      Coming Soon
-                    </button>
                 </div>
               </div>
             </div>
