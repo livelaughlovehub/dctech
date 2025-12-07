@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import proMailVideo from './assets/mailman.mp4'
-import comingSoonVideo from './assets/commingsoon.mp4'
+import landSurveyVideo from './assets/land-survey.mp4'
 
 function App() {
   const heroRef = useRef(null)
@@ -200,7 +200,7 @@ function App() {
                     playsInline
                     className="w-full h-full object-cover"
                   >
-                    <source src={comingSoonVideo} type="video/mp4" />
+                    <source src={landSurveyVideo} type="video/mp4" />
                   </video>
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-900/70 to-black/70 flex items-center justify-center">
                     <div className="text-center">
