@@ -153,7 +153,7 @@ function App() {
                 
                 <div>
                   <a
-                    href="http://surveyflow-docker.eba-jmmrjy2e.us-east-1.elasticbeanstalk.com/login"
+                    href="https://d25t0cfr5vha42.cloudfront.net/dashboard"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block w-full md:w-auto"
