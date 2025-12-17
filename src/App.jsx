@@ -3,6 +3,7 @@ import proMailVideo from './assets/mailman.mp4'
 import landSurveyVideo from './assets/land-survey.mp4'
 import solIncineratorVideo from './assets/dcsol.mp4'
 import DCsol from './DCsol.jsx'
+import SurveyFlow from './SurveyFlow.jsx'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
@@ -115,6 +116,11 @@ function App() {
     return <DCsol onBack={() => setCurrentPage('home')} />
   }
 
+  // Show SurveyFlow page if route is active
+  if (currentPage === 'surveyflow') {
+    return <SurveyFlow onBack={() => setCurrentPage('home')} />
+  }
+
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       {/* Hero Section - Full Screen Impact */}
@@ -182,16 +188,12 @@ function App() {
                 </div>
                 
                 <div>
-                  <a
-                    href="https://d25t0cfr5vha42.cloudfront.net/dashboard"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block w-full md:w-auto"
+                  <button
+                    onClick={() => setCurrentPage('surveyflow')}
+                    className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-white text-black font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 shadow-2xl hover:shadow-white/30"
                   >
-                    <button className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-white text-black font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 shadow-2xl hover:shadow-white/30">
-                      Open SurveyFlow →
-                    </button>
-                  </a>
+                    Open SurveyFlow →
+                  </button>
                 </div>
               </div>
             </div>
