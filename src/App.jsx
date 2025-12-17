@@ -1,17 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react'
 import proMailVideo from './assets/mailman.mp4'
 import landSurveyVideo from './assets/land-survey.mp4'
+import solIncineratorVideo from './assets/dcsol.mp4'
+import DCsol from './DCsol.jsx'
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('home')
   const heroRef = useRef(null)
   const surveyFlowRef = useRef(null)
   const proMailRef = useRef(null)
+  const solIncineratorRef = useRef(null)
   const [scrollY, setScrollY] = useState(0)
   const [heroScale, setHeroScale] = useState(1)
   const [surveyFlowScale, setSurveyFlowScale] = useState(0.9)
   const [proMailScale, setProMailScale] = useState(0.9)
+  const [solIncineratorScale, setSolIncineratorScale] = useState(0.9)
   const [surveyFlowOpacity, setSurveyFlowOpacity] = useState(0)
   const [proMailOpacity, setProMailOpacity] = useState(0)
+  const [solIncineratorOpacity, setSolIncineratorOpacity] = useState(0)
 
   useEffect(() => {
     let ticking = false
@@ -62,6 +68,25 @@ function App() {
         setProMailOpacity(visibleRatio)
       }
 
+      // Sol Incinerator scale and opacity
+      if (solIncineratorRef.current) {
+        const rect = solIncineratorRef.current.getBoundingClientRect()
+        const windowHeight = window.innerHeight
+        const windowCenter = windowHeight / 2
+        const elementCenter = rect.top + rect.height / 2
+        const distanceFromCenter = Math.abs(elementCenter - windowCenter)
+        const maxDistance = windowHeight * 0.8
+        
+        // Scale: bigger when centered (1.05), smaller when far (0.85)
+        const normalizedDistance = Math.min(distanceFromCenter / maxDistance, 1)
+        const scale = 0.85 + (1.05 - 0.85) * (1 - normalizedDistance)
+        setSolIncineratorScale(Math.max(0.85, Math.min(1.05, scale)))
+        
+        // Opacity: fade in as it enters viewport
+        const visibleRatio = Math.max(0, Math.min(1, (windowHeight - Math.max(0, rect.top)) / (windowHeight * 0.6)))
+        setSolIncineratorOpacity(visibleRatio)
+      }
+
       setScrollY(window.scrollY)
       ticking = false
     }
@@ -84,6 +109,11 @@ function App() {
       window.removeEventListener('resize', updateScrollEffects)
     }
   }, [])
+
+  // Show DC sol page if route is active
+  if (currentPage === 'dcsol') {
+    return <DCsol onBack={() => setCurrentPage('home')} />
+  }
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
@@ -215,6 +245,55 @@ function App() {
                       Open ProMail →
                     </button>
                   </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Sol Incinerator Card */}
+          <div 
+            ref={solIncineratorRef}
+            className="group"
+            style={{
+              transform: `scale(${solIncineratorScale})`,
+              opacity: solIncineratorOpacity,
+              willChange: 'transform, opacity'
+            }}
+          >
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 via-gray-950 to-black border border-gray-800/50 hover:border-gray-700/50 transition-all duration-500">
+              <div className="p-8 md:p-16 lg:p-20">
+                <div className="mb-8 md:mb-12">
+                  <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
+                    DC sol
+                  </h2>
+                  <p className="text-xl md:text-2xl lg:text-3xl text-gray-300 mb-4 leading-relaxed max-w-4xl">
+                    Reclaim stuck SOLANA tokens from your wallet → burn dust tokens and clean up your balance
+                  </p>
+                  <p className="text-base md:text-lg text-gray-500">
+                    Connect your wallet to reclaim and burn unwanted SOL tokens
+                  </p>
+                </div>
+                
+                {/* Video Preview */}
+                <div className="mb-10 md:mb-12 rounded-2xl bg-black border border-gray-700/50 h-64 md:h-96 lg:h-[500px] overflow-hidden group-hover:border-gray-600 transition-colors duration-500">
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  >
+                    <source src={solIncineratorVideo} type="video/mp4" />
+                  </video>
+                </div>
+                
+                <div>
+                  <button
+                    onClick={() => setCurrentPage('dcsol')}
+                    className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-white text-black font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 shadow-2xl hover:shadow-white/30"
+                  >
+                    Reclaim SOL →
+                  </button>
                 </div>
               </div>
             </div>
