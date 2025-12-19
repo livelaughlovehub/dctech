@@ -1,6 +1,26 @@
 import React, { useState, useEffect } from 'react'
 import { Transaction } from '@solana/web3.js'
 
+const API_GATEWAY_URL = 'https://l893o59kbj.execute-api.us-east-1.amazonaws.com/dev'
+
+// Helper to handle CORS issues
+const fetchWithRetry = async (url, options, retries = 1) => {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const response = await fetch(url, {
+        ...options,
+        mode: 'cors',
+        credentials: 'omit'
+      })
+      return response
+    } catch (error) {
+      if (i === retries) throw error
+      console.log(`Retry ${i + 1}...`)
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    }
+  }
+}
+
 function DCsol({ onBack }) {
   const [walletConnected, setWalletConnected] = useState(false)
   const [walletAddress, setWalletAddress] = useState(null)
@@ -11,18 +31,47 @@ function DCsol({ onBack }) {
 
   // Connect Solana wallet
   const connectWallet = async () => {
+    // Check for Phantom wallet
     if (typeof window !== 'undefined' && window.solana && window.solana.isPhantom) {
       try {
-        const response = await window.solana.connect()
+        // Check if already connected
+        if (window.solana.isConnected) {
+          const publicKey = window.solana.publicKey
+          setPublicKey(publicKey)
+          setWalletAddress(publicKey.toString())
+          setWalletConnected(true)
+          return
+        }
+        
+        // Request connection
+        const response = await window.solana.connect({ onlyIfTrusted: false })
         setPublicKey(response.publicKey)
         setWalletAddress(response.publicKey.toString())
         setWalletConnected(true)
       } catch (err) {
         console.error('Error connecting wallet:', err)
-        alert('Failed to connect wallet')
+        if (err.code === 4001) {
+          alert('Connection rejected. Please approve the connection request.')
+        } else {
+          alert('Failed to connect wallet: ' + (err.message || 'Unknown error'))
+        }
       }
-    } else {
-      alert('Please install Phantom wallet!')
+    } 
+    // Check for Solflare wallet
+    else if (typeof window !== 'undefined' && window.solflare) {
+      try {
+        await window.solflare.connect()
+        const publicKey = window.solflare.publicKey
+        setPublicKey(publicKey)
+        setWalletAddress(publicKey.toString())
+        setWalletConnected(true)
+      } catch (err) {
+        console.error('Error connecting Solflare:', err)
+        alert('Failed to connect Solflare wallet: ' + (err.message || 'Unknown error'))
+      }
+    } 
+    else {
+      alert('Please install Phantom or Solflare wallet extension!')
     }
   }
 
@@ -32,18 +81,58 @@ function DCsol({ onBack }) {
     
     setLoading(true)
     try {
-      const response = await fetch('YOUR_LAMBDA_ENDPOINT/scan', {
+      console.log('Scanning wallet:', walletAddress)
+      console.log('API URL:', `${API_GATEWAY_URL}/scan`)
+      
+      const response = await fetchWithRetry(`${API_GATEWAY_URL}/scan`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({ walletAddress })
       })
       
+      console.log('Response status:', response.status)
+      console.log('Response headers:', response.headers)
+      
+      if (!response.ok) {
+        let errorData
+        try {
+          errorData = await response.json()
+        } catch (e) {
+          errorData = { error: `HTTP ${response.status}: ${response.statusText}` }
+        }
+        console.error('API Error:', response.status, errorData)
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+      }
+      
       const data = await response.json()
+      console.log('Scan response:', data)
+      
+      // Handle empty wallet gracefully
       setEligibleItems(data.items || [])
       setTotalReclaimable(parseFloat(data.totalReclaimable || 0))
+      
+      // If wallet is empty, that's fine - just show no items
+      if (!data.items || data.items.length === 0) {
+        console.log('No eligible items found - wallet may be empty or have no closed accounts')
+      }
     } catch (error) {
       console.error('Error scanning wallet:', error)
-      alert('Failed to scan wallet. Please try again.')
+      console.error('Full error details:', {
+        message: error.message,
+        stack: error.stack,
+        walletAddress,
+        apiUrl: `${API_GATEWAY_URL}/scan`
+      })
+      
+      // More specific error messages
+      if (error.message === 'Failed to fetch') {
+        alert('Network error: Could not reach API Gateway.\n\nPossible causes:\n- CORS not configured\n- API Gateway endpoint incorrect\n- Network connectivity issue\n\nCheck browser console for details.')
+      } else {
+        alert(`Failed to scan wallet: ${error.message}\n\nCheck browser console for details.`)
+      }
     } finally {
       setLoading(false)
     }
@@ -56,7 +145,7 @@ function DCsol({ onBack }) {
     setLoading(true)
     try {
       // Get transaction from Lambda
-      const response = await fetch('YOUR_LAMBDA_ENDPOINT/reclaim', {
+      const response = await fetchWithRetry(`${API_GATEWAY_URL}/reclaim`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -75,8 +164,21 @@ function DCsol({ onBack }) {
       
       // Deserialize and sign transaction with user's wallet
       const transactionObj = Transaction.from(Buffer.from(transaction, 'base64'))
-      const signed = await window.solana.signTransaction(transactionObj)
-      const signature = await window.solana.sendTransaction(signed)
+      
+      // Handle different wallet providers
+      let signed
+      let walletProvider
+      
+      if (window.solana && window.solana.isPhantom) {
+        walletProvider = window.solana
+      } else if (window.solflare) {
+        walletProvider = window.solflare
+      } else {
+        throw new Error('No wallet provider found')
+      }
+      
+      signed = await walletProvider.signTransaction(transactionObj)
+      const signature = await walletProvider.sendTransaction(signed)
       
       alert(`Success! Reclaimed ${totalReclaimable.toFixed(9)} SOL.\nSignature: ${signature}`)
       
