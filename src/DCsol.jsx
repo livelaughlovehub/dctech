@@ -180,7 +180,8 @@ function DCsol({ onBack }) {
       signed = await walletProvider.signTransaction(transactionObj)
       const signature = await walletProvider.sendTransaction(signed)
       
-      alert(`Success! Reclaimed ${totalReclaimable.toFixed(9)} SOL.\nSignature: ${signature}`)
+      const netAmount = totalReclaimable - 0.002
+      alert(`Success! Reclaimed ${totalReclaimable.toFixed(9)} SOL.\nService fee: 0.002 SOL\nNet received: ${netAmount.toFixed(9)} SOL\n\nSignature: ${signature}`)
       
       // Refresh scan
       await scanWallet()
@@ -294,9 +295,25 @@ function DCsol({ onBack }) {
             ) : eligibleItems.length > 0 ? (
               <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
                 <h2 className="text-2xl font-bold mb-4">Eligible to Reclaim</h2>
-                <div className="mb-6 p-4 bg-green-900/20 border border-green-800 rounded-lg">
+                <div className="mb-4 p-4 bg-green-900/20 border border-green-800 rounded-lg">
                   <p className="text-gray-400 text-sm">Total Reclaimable</p>
                   <p className="text-3xl font-bold text-green-400">{totalReclaimable.toFixed(9)} SOL</p>
+                </div>
+                
+                {/* Fee Information */}
+                <div className="mb-6 p-4 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
+                  <p className="text-sm text-yellow-400 mb-1">
+                    Service fee: <span className="font-bold">0.002 SOL</span>
+                  </p>
+                  {totalReclaimable >= 0.002 ? (
+                    <p className="text-xs text-gray-400">
+                      Net amount you'll receive: <span className="font-bold text-green-400">{(totalReclaimable - 0.002).toFixed(9)} SOL</span>
+                    </p>
+                  ) : (
+                    <p className="text-xs text-red-400">
+                      ⚠️ Reclaimable amount is less than the service fee. Not recommended to proceed.
+                    </p>
+                  )}
                 </div>
                 
                 <div className="space-y-2 mb-6 max-h-64 overflow-y-auto">
@@ -310,10 +327,16 @@ function DCsol({ onBack }) {
                 
                 <button
                   onClick={executeReclaim}
-                  disabled={loading}
-                  className="w-full px-8 py-4 bg-green-600 hover:bg-green-700 disabled:bg-gray-700 text-white font-bold text-xl rounded-xl transition-all"
+                  disabled={loading || totalReclaimable < 0.002}
+                  className={`w-full px-8 py-4 disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-bold text-xl rounded-xl transition-all ${
+                    totalReclaimable >= 0.002 
+                      ? 'bg-green-600 hover:bg-green-700' 
+                      : 'bg-gray-600'
+                  }`}
                 >
-                  {loading ? 'Processing...' : `Reclaim ${totalReclaimable.toFixed(9)} SOL`}
+                  {loading ? 'Processing...' : totalReclaimable >= 0.002 
+                    ? `Reclaim ${totalReclaimable.toFixed(9)} SOL` 
+                    : 'Amount too small (fee exceeds reclaimable)'}
                 </button>
               </div>
             ) : (
