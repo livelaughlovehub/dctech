@@ -3,6 +3,7 @@ import proMailVideo from './assets/mailman.mp4'
 import landSurveyVideo from './assets/land-survey.mp4'
 import solIncineratorVideo from './assets/dcsol.mp4'
 import careerFinderVideo from './assets/careerfinder.mp4'
+import sunglasshutVideo from './assets/sunglasshut.mp4'
 import DCsol from './DCsol.jsx'
 import SurveyFlow from './SurveyFlow.jsx'
 import ProMail from './ProMail.jsx'
@@ -14,16 +15,19 @@ function App() {
   const careerFinderRef = useRef(null)
   const surveyFlowRef = useRef(null)
   const proMailRef = useRef(null)
+  const aiCommerceRef = useRef(null)
   const solIncineratorRef = useRef(null)
   const [scrollY, setScrollY] = useState(0)
   const [heroScale, setHeroScale] = useState(1)
   const [careerFinderScale, setCareerFinderScale] = useState(0.9)
   const [surveyFlowScale, setSurveyFlowScale] = useState(0.9)
   const [proMailScale, setProMailScale] = useState(0.9)
+  const [aiCommerceScale, setAiCommerceScale] = useState(0.9)
   const [solIncineratorScale, setSolIncineratorScale] = useState(0.9)
   const [careerFinderOpacity, setCareerFinderOpacity] = useState(0)
   const [surveyFlowOpacity, setSurveyFlowOpacity] = useState(0)
   const [proMailOpacity, setProMailOpacity] = useState(0)
+  const [aiCommerceOpacity, setAiCommerceOpacity] = useState(0)
   const [solIncineratorOpacity, setSolIncineratorOpacity] = useState(0)
 
   useEffect(() => {
@@ -92,6 +96,25 @@ function App() {
         // Opacity: fade in as it enters viewport
         const visibleRatio = Math.max(0, Math.min(1, (windowHeight - Math.max(0, rect.top)) / (windowHeight * 0.6)))
         setProMailOpacity(visibleRatio)
+      }
+
+      // AI Commerce scale and opacity
+      if (aiCommerceRef.current) {
+        const rect = aiCommerceRef.current.getBoundingClientRect()
+        const windowHeight = window.innerHeight
+        const windowCenter = windowHeight / 2
+        const elementCenter = rect.top + rect.height / 2
+        const distanceFromCenter = Math.abs(elementCenter - windowCenter)
+        const maxDistance = windowHeight * 0.8
+        
+        // Scale: bigger when centered (1.05), smaller when far (0.85)
+        const normalizedDistance = Math.min(distanceFromCenter / maxDistance, 1)
+        const scale = 0.85 + (1.05 - 0.85) * (1 - normalizedDistance)
+        setAiCommerceScale(Math.max(0.85, Math.min(1.05, scale)))
+        
+        // Opacity: fade in as it enters viewport
+        const visibleRatio = Math.max(0, Math.min(1, (windowHeight - Math.max(0, rect.top)) / (windowHeight * 0.6)))
+        setAiCommerceOpacity(visibleRatio)
       }
 
       // Sol Incinerator scale and opacity
@@ -372,6 +395,55 @@ function App() {
                       Open ProMail →
                     </button>
                   </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* AI Commerce Card - Before DC sol */}
+          <div 
+            ref={aiCommerceRef}
+            className="group"
+            style={{
+              transform: `scale(${aiCommerceScale})`,
+              opacity: aiCommerceOpacity,
+              willChange: 'transform, opacity'
+            }}
+          >
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 via-gray-950 to-black border border-gray-800/50 hover:border-gray-700/50 transition-all duration-500">
+              <div className="p-8 md:p-16 lg:p-20">
+                <div className="mb-8 md:mb-12">
+                  <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
+                    AI Commerce
+                  </h2>
+                  <p className="text-xl md:text-2xl lg:text-3xl text-gray-300 mb-4 leading-relaxed max-w-4xl">
+                    Coming Soon
+                  </p>
+                  <p className="text-base md:text-lg text-gray-500">
+                    AI-powered commerce solutions
+                  </p>
+                </div>
+                
+                {/* Video Preview */}
+                <div className="mb-10 md:mb-12 rounded-2xl bg-black border border-gray-700/50 h-64 md:h-96 lg:h-[500px] overflow-hidden group-hover:border-gray-600 transition-colors duration-500">
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  >
+                    <source src={sunglasshutVideo} type="video/mp4" />
+                  </video>
+                </div>
+                
+                <div>
+                  <button
+                    disabled
+                    className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-gray-600 text-gray-400 font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl cursor-not-allowed shadow-2xl opacity-50"
+                  >
+                    Coming Soon
+                  </button>
                 </div>
               </div>
             </div>
