@@ -5,6 +5,7 @@ import solIncineratorVideo from './assets/dcsol.mp4'
 import careerFinderVideo from './assets/careerfinder.mp4'
 import DCsol from './DCsol.jsx'
 import SurveyFlow from './SurveyFlow.jsx'
+import ProMail from './ProMail.jsx'
 import LumaStyleTest from './test/LumaStyleTest.jsx'
 
 function App() {
@@ -141,6 +142,8 @@ function App() {
       const hash = window.location.hash.replace('#', '')
       if (hash === 'luma-test') {
         setCurrentPage('luma-test')
+      } else if (hash === 'promail') {
+        setCurrentPage('promail')
       } else if (hash === '' || hash === 'home') {
         setCurrentPage('home')
       }
@@ -163,6 +166,10 @@ function App() {
       if (window.location.hash !== '#luma-test') {
         window.history.replaceState(null, '', '#luma-test')
       }
+    } else if (currentPage === 'promail') {
+      if (window.location.hash !== '#promail') {
+        window.history.replaceState(null, '', '#promail')
+      }
     } else if (currentPage === 'home' && window.location.hash !== '') {
       window.history.replaceState(null, '', '#')
     }
@@ -176,6 +183,11 @@ function App() {
   // Show SurveyFlow page if route is active
   if (currentPage === 'surveyflow') {
     return <SurveyFlow onBack={() => setCurrentPage('home')} />
+  }
+
+  // Show ProMail page if route is active
+  if (currentPage === 'promail') {
+    return <ProMail onBack={() => setCurrentPage('home')} />
   }
 
   // Show Luma Style Test page
@@ -353,9 +365,7 @@ function App() {
                 
                 <div>
                   <a
-                    href="https://main.dfsb5g96bxdtb.amplifyapp.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="#promail"
                     className="inline-block w-full md:w-auto"
                   >
                     <button className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-white text-black font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 shadow-2xl hover:shadow-white/30">
