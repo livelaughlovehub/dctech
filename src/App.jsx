@@ -7,6 +7,7 @@ import sunglasshutVideo from './assets/sunglasshut.mp4'
 import DCsol from './DCsol.jsx'
 import SurveyFlow from './SurveyFlow.jsx'
 import ProMail from './ProMail.jsx'
+import SunglassesLLL from './SunglassesLLL.jsx'
 import LumaStyleTest from './test/LumaStyleTest.jsx'
 
 function App() {
@@ -167,6 +168,8 @@ function App() {
         setCurrentPage('luma-test')
       } else if (hash === 'promail') {
         setCurrentPage('promail')
+      } else if (hash === 'sunglasses-lll') {
+        setCurrentPage('sunglasses-lll')
       } else if (hash === '' || hash === 'home') {
         setCurrentPage('home')
       }
@@ -193,6 +196,10 @@ function App() {
       if (window.location.hash !== '#promail') {
         window.history.replaceState(null, '', '#promail')
       }
+    } else if (currentPage === 'sunglasses-lll') {
+      if (window.location.hash !== '#sunglasses-lll') {
+        window.history.replaceState(null, '', '#sunglasses-lll')
+      }
     } else if (currentPage === 'home' && window.location.hash !== '') {
       window.history.replaceState(null, '', '#')
     }
@@ -211,6 +218,11 @@ function App() {
   // Show ProMail page if route is active
   if (currentPage === 'promail') {
     return <ProMail onBack={() => setCurrentPage('home')} />
+  }
+
+  // Show Sunglasses LL&L page if route is active
+  if (currentPage === 'sunglasses-lll') {
+    return <SunglassesLLL onBack={() => setCurrentPage('home')} />
   }
 
   // Show Luma Style Test page
@@ -417,7 +429,7 @@ function App() {
                     AI Commerce
                   </h2>
                   <p className="text-xl md:text-2xl lg:text-3xl text-gray-300 mb-4 leading-relaxed max-w-4xl">
-                    Coming Soon
+                    It's Here
                   </p>
                   <p className="text-base md:text-lg text-gray-500">
                     AI-powered commerce solutions
@@ -438,12 +450,14 @@ function App() {
                 </div>
                 
                 <div>
-                  <button
-                    disabled
-                    className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-gray-600 text-gray-400 font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl cursor-not-allowed shadow-2xl opacity-50"
+                  <a
+                    href="#sunglasses-lll"
+                    className="inline-block w-full md:w-auto"
                   >
-                    Coming Soon
-                  </button>
+                    <button className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-white text-black font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 shadow-2xl hover:shadow-white/30">
+                      View Sunglasses →
+                    </button>
+                  </a>
                 </div>
               </div>
             </div>
@@ -513,7 +527,7 @@ function App() {
               href="mailto:dctech0610@gmail.com" 
               className="hover:text-gray-300 transition-colors duration-200"
             >
-              Email: mail@dcfuturetech.com
+              Email: dctech0610@gmail.com
             </a>
           </div>
           <p className="text-gray-600 text-sm md:text-base pt-8">
