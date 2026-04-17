@@ -15,13 +15,14 @@ function SunglassesLLL({ onBack }) {
           <h2 className="text-3xl md:text-4xl font-bold mb-6">About the Glasses</h2>
           <div className="space-y-4 text-gray-300 leading-relaxed">
             <p className="text-lg">
-              Sunglasses LL&L is a curated eyewear experience focused on clean style,
-              premium feel, and all-day comfort. This page is your product detail hub
-              where customers can learn about the collection before checkout.
+              Sunglasses LL&L are more than just shades, they are magical. They are
+              designed to reveal hidden energy, spot alien presence, and when you look
+              into someone&apos;s eyes through the lenses, you may catch a mysterious
+              flicker of light. Style meets supernatural functionality.
             </p>
             <p>
-              Built as part of your AI-commerce stack, this flow is designed to move
-              from discovery to purchase with a clear offer and simple conversion path.
+              Not only are they premium sunglasses, they unlock a story-driven experience
+              that blends fashion with fantasy.
             </p>
           </div>
         </div>
