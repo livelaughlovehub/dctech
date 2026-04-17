@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  /* Avoid global smooth scrolling: it fights SPA route changes and can leave
+     the viewport near the bottom when switching from a long page to a shorter one. */
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
   }
   
   body {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import proMailVideo from './assets/mailman.mp4'
 import landSurveyVideo from './assets/land-survey.mp4'
 import solIncineratorVideo from './assets/dcsol.mp4'
@@ -6,6 +6,7 @@ import careerFinderVideo from './assets/careerfinder.mp4'
 import sunglasshutVideo from './assets/sunglasshut.mp4'
 import DCsol from './DCsol.jsx'
 import SurveyFlow from './SurveyFlow.jsx'
+import TalentSearch from './TalentSearch.jsx'
 import ProMail from './ProMail.jsx'
 import SunglassesLLL from './SunglassesLLL.jsx'
 import LumaStyleTest from './test/LumaStyleTest.jsx'
@@ -166,6 +167,8 @@ function App() {
       const hash = window.location.hash.replace('#', '')
       if (hash === 'luma-test') {
         setCurrentPage('luma-test')
+      } else if (hash === 'talent-search') {
+        setCurrentPage('talent-search')
       } else if (hash === 'promail') {
         setCurrentPage('promail')
       } else if (hash === 'sunglasses-lll') {
@@ -192,6 +195,10 @@ function App() {
       if (window.location.hash !== '#luma-test') {
         window.history.replaceState(null, '', '#luma-test')
       }
+    } else if (currentPage === 'talent-search') {
+      if (window.location.hash !== '#talent-search') {
+        window.history.replaceState(null, '', '#talent-search')
+      }
     } else if (currentPage === 'promail') {
       if (window.location.hash !== '#promail') {
         window.history.replaceState(null, '', '#promail')
@@ -205,6 +212,34 @@ function App() {
     }
   }, [currentPage])
 
+  // Scroll to top when navigating between home and sub-pages. When the new
+  // page is shorter than the old scroll position, browsers clamp scrollY to
+  // the new maximum (often landing on the bottom — e.g. "Schedule a demo").
+  const scrollDocumentTop = () => {
+    const root = document.scrollingElement ?? document.documentElement
+    root.scrollTop = 0
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+    window.scrollTo(0, 0)
+  }
+
+  useLayoutEffect(() => {
+    scrollDocumentTop()
+  }, [currentPage])
+
+  useEffect(() => {
+    scrollDocumentTop()
+    const t = window.setTimeout(scrollDocumentTop, 0)
+    const raf = window.requestAnimationFrame(() => {
+      scrollDocumentTop()
+      window.requestAnimationFrame(scrollDocumentTop)
+    })
+    return () => {
+      window.clearTimeout(t)
+      window.cancelAnimationFrame(raf)
+    }
+  }, [currentPage])
+
   // Show DC sol page if route is active
   if (currentPage === 'dcsol') {
     return <DCsol onBack={() => setCurrentPage('home')} />
@@ -213,6 +248,10 @@ function App() {
   // Show SurveyFlow page if route is active
   if (currentPage === 'surveyflow') {
     return <SurveyFlow onBack={() => setCurrentPage('home')} />
+  }
+
+  if (currentPage === 'talent-search') {
+    return <TalentSearch onBack={() => setCurrentPage('home')} />
   }
 
   // Show ProMail page if route is active
@@ -297,16 +336,13 @@ function App() {
                 </div>
                 
                 <div>
-                  <a
-                    href="https://main.d3fxiad7rsnua9.amplifyapp.com/?searchId=21"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block w-full md:w-auto"
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage('talent-search')}
+                    className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-white text-black font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 shadow-2xl hover:shadow-white/30"
                   >
-                    <button className="w-full md:w-auto px-12 md:px-16 py-5 md:py-6 bg-white text-black font-bold text-xl md:text-2xl lg:text-3xl rounded-2xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 shadow-2xl hover:shadow-white/30">
-                      Open Talent Search →
-                    </button>
-                  </a>
+                    Open Talent Search →
+                  </button>
                 </div>
               </div>
             </div>
